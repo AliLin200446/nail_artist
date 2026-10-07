@@ -29,3 +29,16 @@
 .bottle.selected[data-material=glitter] .glass{background-image:radial-gradient(#efe4c1 1px,transparent 1.5px),radial-gradient(#9c947f 1px,transparent 1.5px);background-size:11px 13px,17px 19px;background-position:3px 5px,7px 2px}
 .bottle.selected[data-material=pearl] .glass{background:linear-gradient(115deg,var(--color),#e3d9d9 45%,var(--color))}
 .bottle.selected[data-material=matte] .glass:before{opacity:0}.bottle.selected[data-material=gloss] .glass:before{height:27px;opacity:.9}
+
+/* A shallow ceramic dish sits at the table edge; the approved tools stay together. */
+#charm-dish{position:absolute;bottom:-7px;left:50%;transform:translateX(-50%) rotate(-.5deg);width:min(510px,calc(100% - 34px));height:65px;border:1px solid #cbc2b2;border-radius:43% 39% 16px 14px / 13px 12px 16px 14px;background:linear-gradient(174deg,#fffaf0,#e4ddce 43%,#f1eade 90%);box-shadow:inset 0 3px 2px #fffaf0,inset 0 6px 9px #8b7a5d16,1px 5px 6px #77634819;display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(2,1fr);padding:5px 13px 3px;touch-action:none;transition:transform .75s,opacity .6s;z-index:3}
+#charm-dish canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+#charm-dish button{z-index:1;min-width:0;touch-action:none;cursor:grab;padding:0}
+#charm-dish button:active{cursor:grabbing}
+#charm-dish button:focus-visible{outline-offset:-2px;outline-color:#ad9b82}
+.table-objects,.zoomed .table-objects{bottom:123px}.material-row{bottom:88px}.bottom-line{bottom:59px}
+.presenting #charm-dish{transform:translate(-50%,110px) rotate(-.5deg);opacity:0;pointer-events:none}
+.carrying-charm #scene canvas{touch-action:none;cursor:none!important}.carrying-charm #cursor{display:none!important}
+#toast{bottom:148px;z-index:5;max-width:calc(100% - 36px);width:max-content;text-align:center}
+@media(max-width:700px){.table-objects,.zoomed .table-objects{bottom:172px}.material-row{bottom:94px}.bottom-line{bottom:64px}#charm-dish{height:66px;width:calc(100% - 26px)}#toast{bottom:171px;font-size:9px}}
+#workspace[data-tool=pick] #scene canvas{touch-action:none}

@@ -39,7 +39,7 @@ No templates, random designs, accounts, social features, or AI generation are pr
 
 ## Material lab
 
-Color, material and tool are independent. Ten pigments combine with cream, jelly, pearl, chrome, glitter, magnetic, matte and gloss. A fan brush lays down soft low-opacity pigment; the pick places stars, sparks, dots, hearts or pearls. Placement is deliberately basic; moving, rotating and resizing placed objects are not included.
+Color, material and tool are independent. Ten pigments combine with cream, jelly, pearl, chrome, glitter, magnetic, matte and gloss. A fan brush lays down soft low-opacity pigment; the pick repositions physical objects from the ceramic tray. Existing flat decorations from earlier saved sets remain intact.
 
 `dist/materials.js` owns replayable actions and per-gesture layers. Jelly applies one translucent coat per gesture, rather than saturating from overlapping stamps inside the same gesture. Glitter uses a saved random seed to deposit distinct flakes, so reload and undo recreate exactly the same deposits. Each nail has pigment, region material ID, and detail textures. Lightweight per-nail shader branches produce silk-like pearl, graphic chrome, an interpolated magnetic band, matte pigment and a curved gloss highlight. No environment maps or full-screen material shaders are used.
 
@@ -59,3 +59,17 @@ Saved v1 artwork is migrated into v2 with original pigment values and legacy str
 - At a 390 × 844 iframe viewport, color, all six tools and all eight material controls fit; exactly one color and one material remained selected.
 
 Mobile layout was checked in a narrow iframe; physical touch-device latency was not benchmarked.
+
+## Physical objects
+
+The lower-edge ceramic dish contains sixteen small objects: three pearls, three studs, two rhinestones, two irregular beads, a star, heart, ring, chain, flower and metal fragment. Tap or drag one onto a nail, then continue placing copies. Escape ends repeat mode; selecting PICK lets you lift an existing object, move it on its nail, or drag it outside to remove it. A chain takes two placements on the same nail. Double-tap a nail to work close up.
+
+With an object selected, wheel or `[` / `]` rotates it. Shift + wheel or `+` / `-` scales it between 0.7× and 1.4×. Two pointers on a lifted object support pinch and twist. DONE hides the dish along with the existing tools and gently increases object lighting.
+
+`dist/charms.js` owns real Three.js geometry, shared materials and geometry, an offscreen-generated reflection environment, instanced chain links, contact shadows, and spring settling. All objects attach to nail mesh coordinates (`nailId`, `u`, `v`, `rotation`, `scale`, `zOffset`, `type`, `material`); chains also store their second endpoint. They render above the paint without changing the illustrated hand artwork or pigment shader. Pearl/gem attraction operates within a three-screen-pixel band. No external charm assets or physics library are used.
+
+All placements and edits join the existing global undo sequence. Version 3 device saves retain both painted actions and physical objects; versions 1 and 2 remain readable. Sets support up to 400 physical objects. The tray reuses the same object meshes, and only rerenders when its hover state or size changes.
+
+### Charm verification
+
+Run `node --test tests/charms.test.mjs` for saved-state validation and v1/v2/v3 compatibility, then `vercel build --prod`. Browser checks covered repeat placement; nail-local transforms across reload and close-up; move, rotate, resize, remove and undo; chain endpoints; a rhinestone inside a ring; paint/object interleaving; and 390 × 844 layout. Pearl spacing snapped to 4.692 world units (the sum of radii plus a 2% gap). Real multitouch hardware has not been benchmarked.
