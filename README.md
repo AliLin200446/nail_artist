@@ -21,3 +21,26 @@ Hands are a fixed illustrated composition, not articulated anatomy. Selection su
 No templates, random designs, accounts, social features, or AI generation are present in the website.
 
 # nail_artist
+
+## Material lab
+
+Color, material and tool are independent. Ten pigments combine with cream, jelly, pearl, chrome, glitter, magnetic, matte and gloss. A fan brush lays down soft low-opacity pigment; the pick places stars, sparks, dots, hearts or pearls. Placement is deliberately basic; moving, rotating and resizing placed objects are not included.
+
+`dist/materials.js` owns replayable actions and per-gesture layers. Jelly applies one translucent coat per gesture, rather than saturating from overlapping stamps inside the same gesture. Glitter uses a saved random seed to deposit distinct flakes, so reload and undo recreate exactly the same deposits. Each nail has pigment, region material ID, and detail textures. Lightweight per-nail shader branches produce silk-like pearl, graphic chrome, an interpolated magnetic band, matte pigment and a curved gloss highlight. No environment maps or full-screen material shaders are used.
+
+Saved v1 artwork is migrated into v2 with original pigment values and legacy stroke accumulation. Material, decoration choice, action history, particle seeds, and magnet positions are saved locally. Clean erases pigment and details; undo replays deterministic actions. Browser WebMCP actions use the same layer engine as pointer painting.
+
+### Verification, 2026-10-07
+
+- Oxblood × jelly × brush: the same path increased mean pigment coverage 0.0584 → 0.0983 → 0.1255 across three coats (measurement over the whole 512px texture).
+- Silver × chrome × brush: shader compiled without errors; dark/light graphic band visible.
+- Moss × magnetic × brush: band position interpolated from -0.0845 toward -1.0, then accepted the opposite target.
+- Cream × glitter × fan: repeated deposits accumulated 68 → 136 → 204 flakes. A second sequence using independent seeds accumulated 60 → 120 → 180.
+- Tomato × cream × liner: thin path recorded and rendered inside nail geometry.
+- Pick × star: one placed decoration; clean removed it; undo restored it.
+- Clean on glitter: 204 → 117 retained flakes; undo restored 204.
+- Reload restored the same coverage, action counts, glitter and decorations.
+- Pearl, matte and gloss rendered without shader errors; invalid nail input rejected before mutation.
+- At a 390 × 844 iframe viewport, color, all six tools and all eight material controls fit; exactly one color and one material remained selected.
+
+Mobile layout was checked in a narrow iframe; physical touch-device latency was not benchmarked.
