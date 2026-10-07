@@ -11,10 +11,12 @@ Standalone WebGL nail-painting prototype. Serve `dist/` over HTTP; no build requ
 - Designs and tools are saved to localStorage on this browser/device.
 
 ## Architecture
-Three.js is vendored in `dist/vendor/`. A generated photographic hand composition backs ten individually fitted curved nail meshes. Each nail owns 512 × 512 paint and finish textures plus its action history. Painting stamps into the textures; hand geometry is never rebuilt while drawing. Pointer pressure or velocity controls application. The shader gives newly painted areas a settling highlight over 2.3 seconds, with distinct metallic and clear behavior. UI and optional WebMCP tools share the same application state.
+Three.js is vendored in `dist/vendor/`. Original vector hand contours are drawn into a high-resolution transparent canvas. Ten independent flat nail meshes share the same positions as their blush bases and warm-brown outlines. The pigment shader adds quiet print variation and one small drawn highlight, with no photographic assets, realistic lighting, or curved gloss. Each nail retains its 512 × 512 paint and finish textures and action history. Painting, layering, erasing, undo, sound, close-up, presentation and local persistence use the existing interaction system.
+
+Nail IDs, normalized drawing coordinates and the storage key remain unchanged so existing saved sets survive the visual update. Four illustrated bottles are visible in the tray; the existing additional colors remain accessible by sliding it.
 
 ## Prototype boundaries
-The reference photograph mentioned in the brief was not attached. This prototype uses a generated substitute. Hands are a fixed photographic composition with WebGL nail surfaces, not fully rigged 3D hands. Selection subtly raises/emphasizes the nail surface; full finger articulation and a separate presentation hand pose require a rigged hand asset. Presentation mode reframes the same photograph. Wet overlap is a restrained opacity blend, not fluid simulation. Clear coating adds sheen. Erasing reveals the natural nail rather than selectively removing only the last layer. Device-local saves do not sync between the local preview and hosted URL. Keyboard users can operate tools and undo; freehand painting requires a pointer.
+Hands are a fixed illustrated composition, not articulated anatomy. Selection subtly emphasizes the nail silhouette. Device-local saves do not sync between preview and hosted origins. Painting requires a pointer; keyboard users can select tools and undo. Erasing reveals the natural nail beneath all paint layers.
 
 No templates, random designs, accounts, social features, or AI generation are present in the website.
 
