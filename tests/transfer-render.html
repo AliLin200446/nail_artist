@@ -1,0 +1,31 @@
+<!doctype html><meta charset="utf-8"><title>Stamp rendering checks</title><pre id="results">Running…</pre>
+<script type="module">
+import {createSurface,replay,applyTransfer,surfaceHasBase,renderImprint} from '../dist/materials.js';
+import {captureRecipe,makeTransfer} from '../dist/transfer.js';
+const lines=[],assert=(condition,label)=>{if(!condition)throw Error(label);lines.push('PASS '+label);};
+const pixel=(n,x,y)=>[...n.ctx.getImageData(x,y,1,1).data];
+const eq=(a,b)=>a.every((v,i)=>Math.abs(v-b[i])<=1);
+const base=(color,tool='brush')=>({tool,color,material:'cream',seed:1,points:Array.from({length:40},(_,i)=>({x:(i%5)*128,y:Math.floor(i/5)*80,r:100}))});
+const dot={tool:'dot',color:0,material:'cream',seed:2,points:[{x:160,y:180,r:20}]};
+const surface=(id,actions)=>{const n={...createSurface(),id,actions};replay(n,actions);return n;};
+try{
+ const actions=[base(3),dot],source=surface(3,actions),recipe=captureRecipe(3,[45,61],actions);
+ const target=surface(6,[]),a=makeTransfer(recipe,target,[45,61]);applyTransfer(target,a);target.actions.push(a);
+ assert(eq(pixel(target,351,180),pixel(source,160,180)),'mirrored pixels land on the opposite UV position');
+ const blue=surface(0,[base(6)]),before=pixel(blue,256,256),layer=makeTransfer(recipe,blue,[34,52]);applyTransfer(blue,layer);blue.actions.push(layer);
+ assert(!layer.includeBase&&eq(before,pixel(blue,256,256)),'an existing cobalt base survives the incoming cream base');
+ assert(pixel(blue,160,180)[0]>pixel(blue,160,180)[2],'red decorative pigment transfers above the existing base');
+ replay(blue,[base(6)]);assert(eq(before,pixel(blue,256,256)),'replaying after undo restores the original base');
+ const erased=surface(0,[base(6),base(0,'erase')]);assert(!surfaceHasBase(erased),'a fully cleaned nail has no remaining base');
+ const refill=makeTransfer(recipe,{...erased,basePresent:surfaceHasBase(erased)},[45,61]);assert(refill.includeBase,'a stamp can supply a new base after CLEAN');
+ const hole=base(3);const erasedRecipe=captureRecipe(3,[45,61],[hole,{tool:'erase',color:0,material:'cream',points:[{x:256,y:256,r:35}]}]);
+ const under=surface(4,[base(6)]),underPixel=pixel(under,256,256);applyTransfer(under,makeTransfer(erasedRecipe,under,[40,51]));
+ assert(eq(underPixel,pixel(under,256,256)),'erasures in an imprint never erase recipient artwork');
+ const second=captureRecipe(6,[45,61],target.actions),again=surface(3,[]);applyTransfer(again,makeTransfer(second,again,[45,61]));
+ assert(eq(pixel(again,160,180),pixel(source,160,180)),'a recaptured stamped nail preserves its surface through two mirrors');
+ assert(renderImprint(recipe)===renderImprint(recipe),'rapid repeats reuse an immutable compiled imprint');
+ const moved=surface(1,[]),shift=makeTransfer(recipe,moved,[45,61],.8,.5);applyTransfer(moved,shift);
+ assert(pixel(moved,160+Math.round(shift.offset.x*512),180)[0]>150,'offset presses shift the transferred motif');
+ document.querySelector('#results').textContent=lines.join('\n')+'\nALL RENDER CHECKS PASSED';
+}catch(e){document.querySelector('#results').textContent=lines.join('\n')+'\nFAIL '+e.message;}
+</script>

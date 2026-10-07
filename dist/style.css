@@ -42,3 +42,21 @@
 #toast{bottom:148px;z-index:5;max-width:calc(100% - 36px);width:max-content;text-align:center}
 @media(max-width:700px){.table-objects,.zoomed .table-objects{bottom:172px}.material-row{bottom:94px}.bottom-line{bottom:64px}#charm-dish{height:66px;width:calc(100% - 26px)}#toast{bottom:171px;font-size:9px}}
 #workspace[data-tool=pick] #scene canvas{touch-action:none}
+
+/* One physical stamper, in the same tool language. Its head carries the imprint. */
+.stamper{width:22px;height:48px;left:10px;top:54px;background:#d9d2bd;border:1px solid #8a7161;border-radius:6px 6px 3px 3px;transform:rotate(-7deg)!important}
+.stamper:before{content:'';position:absolute;left:5px;top:7px;height:27px;border-left:1px solid #fff9}
+.stamper:after{height:7px;bottom:1px;background:#b4bdb5}
+.stamper i{width:30px;height:28px;left:-5px;bottom:-25px;border:1px solid #a89a85;border-radius:5px 5px 11px 11px;background:#fffaf066;overflow:hidden}
+.stamper canvas{width:100%;height:100%;opacity:.85;display:block;mix-blend-mode:multiply}
+.tool.selected .stamper,.tool:hover .stamper{transform:translateY(-6px) rotate(0deg)!important}
+.stamp-wiping .stamper canvas{animation:stamp-wipe .3s ease-out}.stamp-flipping .stamper canvas{animation:stamp-flip .2s ease-out}
+#stamp-press{--press:0;position:absolute;z-index:6;pointer-events:none;width:var(--stamp-width,43px);height:var(--stamp-height,54px);transform:translate(-50%,-50%) rotate(var(--stamp-angle,0deg)) translateY(calc(-9px * (1 - var(--press))));filter:drop-shadow(3px 5px 3px #5b49351a)}
+#stamp-press[hidden]{display:none}.stamp-grip{position:absolute;left:24%;width:52%;top:-28%;height:43%;border:1px solid #9b8d76;border-radius:8px 8px 2px 2px;background:linear-gradient(100deg,#ded9c9,#f0ecdf 35%,#cbc4b1);opacity:.7}
+.stamp-silicone{position:absolute;inset:0;border:1px solid #b1a48c;border-radius:38% 38% 31% 31%;background:linear-gradient(115deg,#fffdf333,#e2dfd222 55%,#fffdf36b);box-shadow:inset 2px 2px 3px #fff9;transform:scaleX(calc(1 + var(--press)*.035)) scaleY(calc(1 - var(--press)*.08));overflow:hidden}
+.stamp-silicone canvas{width:100%;height:100%;opacity:.69;mix-blend-mode:multiply}
+#stamp-annotation{position:absolute;right:5%;bottom:286px;font-size:8px;letter-spacing:.45px;opacity:.5;pointer-events:none}.presenting #stamp-annotation{display:none}
+.stamping #cursor{display:none!important}.stamping #scene canvas{cursor:none;touch-action:none}
+@keyframes stamp-wipe{from{background:#fff9}to{background:transparent}}@keyframes stamp-flip{50%{transform:scaleX(.05)}}
+@media(max-width:700px){.polish-zone{width:calc(100% - 198px)}.stamper{left:5px;top:35px;width:18px;height:36px}.stamper i{width:24px;left:-4px;height:22px;bottom:-20px}.stamper:before{height:21px}#stamp-annotation{bottom:300px;right:20px;font-size:7px}}
+@media(prefers-reduced-motion:reduce){.stamp-flipping .stamper canvas,.stamp-wiping .stamper canvas{animation:none}}

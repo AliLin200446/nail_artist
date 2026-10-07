@@ -73,3 +73,17 @@ All placements and edits join the existing global undo sequence. Version 3 devic
 ### Charm verification
 
 Run `node --test tests/charms.test.mjs` for saved-state validation and v1/v2/v3 compatibility, then `vercel build --prod`. Browser checks covered repeat placement; nail-local transforms across reload and close-up; move, rotate, resize, remove and undo; chain endpoints; a rhinestone inside a ring; paint/object interleaving; and 390 × 844 layout. Pearl spacing snapped to 4.692 world units (the sum of radii plus a 2% gap). Real multitouch hardware has not been benchmarked.
+
+## Transfer stamper
+
+The seventh physical tool is a silicone nail stamper. Select it and press a designed nail to load its surface imprint, then press other nails to transfer it repeatedly. The miniature design stays visible in the tool head. Matching left/right fingers mirror automatically; other transfers preserve orientation. `M`, or another tap on the active loaded stamper, flips that default. Select CLEAN and tap the loaded stamper to wipe it; tapping the now-empty stamper selects it for a new capture.
+
+Each press takes 260 ms, with contact at 43% of the motion and an 8% head compression. A transfer adds one shared-undo action at contact; capture adds none. Charms are independent objects and are never included. Centered presses use the full-nail composition; offset presses shift it by at most 24% of UV space. DONE hides the stamp with the existing tools.
+
+`dist/transfer.js` stores immutable surface recipes shared by transferred layers, including references to earlier stamps when recapturing a stamped nail. `dist/materials.js` replays recipes in normalized nail coordinates with footprint aspect correction, then composites an isolated coat. Initial brush/fan coats are treated as the base; subsequent drawing remains decorative. Existing recipient bases are preserved, while erased bases can receive a fresh one. Source erasures only cut the isolated imprint, never the recipient's artwork. A 0.35-texture-pixel blur gives wet transfers a slight edge softness. Compiled imprints are cached for rapid repetition. Version 4 saves retain the loaded tool and only the recipes still needed by the set; older saves remain readable.
+
+### Stamp verification
+
+- `node --test tests/*.test.mjs`: saved-state compatibility, mirror defaults/override, immutable capture, base policy, offsets, dependency ordering and invalid recipe rejection.
+- Serve the repository over local HTTP and open `tests/transfer-render.html`: ten real-canvas assertions cover mirrored pixels, base preservation, isolated erasure, cleaned-base detection, recaptured transfers, cache reuse, offsets and undo replay. This test page is outside the deployed `dist/` directory.
+- Browser workflow: cream base, red wave and three black dots on left index → mirrored right index → left pinky → independent pinky edit → unique pearl → undo. Also checked M override, tap-to-flip, CLEAN reset, reload persistence, seven-tool layout at 390 × 844, and DONE. No browser errors were reported. Physical touch hardware was not available for testing.
