@@ -2,6 +2,21 @@
 
 Standalone WebGL nail-painting prototype. Serve `dist/` over HTTP; no build required.
 
+## Production deployment
+
+Production runs at https://nailartist.alilinlab.com on the existing Vercel project `nail_artist` (scope `alilins-projects`). The Vercel Root Directory is the repository root (`.`). Root-level `vercel.json` selects the Other framework preset and publishes `dist/`, whose tracked `index.html` is the homepage. The static files are authored directly: no package installation, compilation, or production environment variables are required. Empty install and build commands intentionally skip those steps.
+
+To validate and deploy with an authenticated Vercel CLI:
+
+```sh
+vercel link --yes --project nail_artist --scope alilins-projects
+vercel pull --yes --environment=production --scope alilins-projects
+vercel build --prod
+vercel deploy --prebuilt --prod --scope alilins-projects
+```
+
+The build packages the site under `.vercel/output/static/`. Serve that directory over HTTP for local production checks. All application asset paths are relative to the homepage. There are no client-side URL routes, so no SPA catch-all rewrite is needed; unknown paths should return 404. Keep `.vercel/` local and untracked.
+
 ## Interaction
 - Pick a bottle, then drag on any of ten independently masked nails.
 - Brush, liner, dotting tool and cotton swab share the same polish palette.
