@@ -1,0 +1,9 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {normalizeHex,recentColor,gemShapes} from '../dist/workstation.js';
+import {validCharm} from '../dist/charms.js';
+import {validAction,migrate} from '../dist/materials.js';
+import {clampZoom,focalZoom} from '../dist/view.js';
+test('custom color normalization rejects malformed input; history is deduplicated and bounded',()=>{assert.equal(normalizeHex('6f83c8'),'#6F83C8');assert.equal(normalizeHex('#invalid'),null);let list=[];for(const c of ['#111111','#222222','#333333','#444444','#555555','#666666','#222222'])list=recentColor(list,c);assert.deepEqual(list,['#222222','#666666','#555555','#444444','#333333']);});
+test('all eight gem shapes retain color and transforms while rejecting corrupt saves',()=>{const base={id:'gem-test',nailId:2,type:'gem',material:'gem',color:'#a92e46',u:.5,v:1.4,scale:1.1,rotation:.2,zOffset:0};for(const shape of gemShapes)assert.ok(validCharm({...base,shape}));assert.ok(!validCharm({...base,shape:'heart',color:'red;invalid'}));assert.ok(!validCharm({...base,shape:'triangle'}));});
+test('pointer focal point stays fixed throughout zoom, including clamp boundaries',()=>{for(const requested of [.1,.65,1,2.5,3,4,10]){const old=1,next=clampZoom(requested),center={x:-100,y:25},offset={x:380,y:-190},c=focalZoom(center,old,next,offset);assert.ok(Math.abs(center.x+offset.x/old-c.x-offset.x/next)<1e-8);assert.ok(Math.abs(center.y+offset.y/old-c.y-offset.y/next)<1e-8);assert.ok(next>=.65&&next<=4);}});
+test('version six and immutable custom pigment actions remain readable without palette indices',()=>{const a={tool:'brush',material:'jelly',color:0,pigment:'#6F83C8',opacity:.5,points:[{x:200,y:250,r:60}]};assert.ok(validAction(a));assert.ok(!validAction({...a,opacity:2}));const state={v:6,nails:Array.from({length:10},()=>[a]),workstation:{recent:['#6F83C8']}};assert.deepEqual(migrate(state),state);});

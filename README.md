@@ -102,3 +102,25 @@ Shift-double-click another nail to copy the selected form, or tap the faint ghos
 - `tests/extension-render.html`: nine passing real-canvas checks for added surface, anchored artwork, clipping, trim/regrow, undo and stamping between natural and extended nails. Existing ten transfer canvas checks also pass.
 - Browser checks: continuous length, shape cycling, fitted close-up, liner and pearl on the extension, trim removal and complete undo restoration, opposite-hand matching, mirrored transfer and refresh persistence.
 - All eight tools render at a 390 × 844 iframe size. Physical touch gestures and device performance still require hardware testing.
+
+## Workstation: color, gems, view and curing
+
+The table now has three zones: polish/material at left, options for the active tool at center, and larger illustrated tools at right. Brush and liner expose size/opacity; dot exposes size/spacing; fan exposes size/density; clean exposes size. PICK reveals gem shapes, colors and size. The original pearl/chain/object dish is available through the secondary “pearls, chains & objects” control. Mobile uses horizontal scrolling for bottles, materials, gems and tools.
+
+**Custom color:** `+ custom` opens a compact native visual/hue picker and six-digit HEX field. A new illustrated bottle joins the collection. The five most recent custom colors persist; every paint action carries its own immutable pigment, so evicting an old bottle never recolors existing artwork or stamped recipes.
+
+**Gems:** round, oval, square, diamond, heart, star, teardrop and pearl shapes use generated vector silhouettes, restrained facets and a contact shadow. Pick a shape and curated/custom color, then place it. Drag a placed gem to move; its small floating controls resize, rotate or delete it. `[ / ]`, `+ / −` and Delete are also supported. Two pointers on a lifted object scale and rotate it. Alt+wheel rotates the selected object; Alt+Shift+wheel resizes. Ordinary wheel input always belongs to the canvas view.
+
+**View:** wheel or trackpad pinch zooms between 65% and 400% around the pointer. Horizontal/Shift scrolling and Space+drag pan. Two fingers on the canvas pan and zoom around their midpoint; starting a canvas pinch cancels the tentative paint stroke. Object gestures take precedence when lifting a gem. Double-tap a nail is a 250% framing shortcut; repeat or FIT returns to the full composition. Brush dimensions remain in nail coordinates, independent of camera zoom. View targets are device-local saves.
+
+**Finish:** DONE fades editing objects away over 550–650 ms and brings in an illustrated lamp. READY TO CURE allows returning to making. CURE choreographs the hand group into the lamp with an occlusion plane, runs the three-second 03/02/01 countdown, switches the UV light off, waits 300 ms and withdraws the hands before the final reveal. Material reactions and sound are restrained; the hum respects sound off. KEEP exports a PNG. SHARE uses native file sharing when supported and otherwise downloads the image. START AGAIN clears the working set as one undoable action, including across refresh. Painting actions and gem data are never changed by curing.
+
+`dist/workstation.js` owns contextual UI and colors; `dist/view.js` owns focal zoom/pan and gesture arbitration; `dist/cure.js` owns the ritual state machine. The existing paint/charm/stamp/extension engines remain the rendering and history owners. Version 6 saves include custom colors, recent bottles, contextual settings, gem records and view, while versions 1–5 remain readable.
+
+### Workstation verification
+
+- 18 Node tests: previous geometry/transfer compatibility plus color normalization/history limits, custom gem validation, focal zoom invariance and v6/custom-pigment validation.
+- 13 real-browser checks in `tests/workstation-render.html`: exact custom-blue pixels, opacity/replay, mandatory curing stages, countdown, physical transforms, unchanged design, final export availability and reset.
+- Existing 10 stamp and 9 extension canvas regressions pass.
+- Manual browser flows: #6F83C8 bottle and paint; ruby heart placement/move/scale/rotation; 100% → 300% pointer-focused zoom; jelly + liner + gem alignment; delete/undo; refresh persistence; curing and reveal. Responsive layout inspected at 390 × 844.
+- Physical multitouch hardware and native OS share sheets remain untested.

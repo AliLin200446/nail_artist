@@ -1,0 +1,19 @@
+<!doctype html><meta charset="utf-8"><title>Workstation rendering checks</title><pre id="results">Running…</pre><div id="fixture"></div>
+<script type="module">
+import {createSurface,replay} from '../dist/materials.js';import {createCuring} from '../dist/cure.js';
+const checks=[],assert=(value,name)=>{if(!value)throw Error(name);checks.push('PASS '+name);};
+try{
+ const action={tool:'brush',material:'jelly',color:0,pigment:'#6F83C8',opacity:1,points:[{x:256,y:256,r:60}]},n=createSurface();replay(n,[action]);const p=n.ctx.getImageData(256,256,1,1).data;
+ assert(Math.abs(p[0]-111)<3&&Math.abs(p[1]-131)<3&&Math.abs(p[2]-200)<3,'custom #6F83C8 renders independently of curated palette');
+ const original=Array.from(p);replay(n,[{...action,opacity:.4}]);assert(n.ctx.getImageData(256,256,1,1).data[3]<original[3]*.5,'opacity lowers one complete jelly coat');
+ replay(n,[action]);assert(n.ctx.getImageData(256,256,1,1).data.every((v,i)=>v===original[i]),'replaying a saved custom color reproduces exact pixels');
+ const root=document.querySelector('#fixture'),group={position:{y:0},scale:{value:1,setScalar(v){this.value=v;}}},nail={actions:[action],mesh:{material:{uniforms:{cure:{value:0},cureProgress:{value:0}}}}};let presented=false,kept=0,reset=0;
+ const cure=createCuring({root,group,nails:[nail],charms:()=>({cure(){}}),present:v=>presented=v,tone(){},sound:()=>false,exportImage:()=>kept++,reset:()=>reset++,save(){}});
+ cure.begin();assert(presented&&cure.state()==='ready'&&root.querySelector('#final-reveal').hidden,'DONE enters ready state without exposing export');
+ root.querySelector('#cure-ready button').click();let t=performance.now();cure.update(t+1200);assert(cure.state()==='curing'&&group.position.y<0&&group.scale.value<1,'hands physically move into the lamp before curing');
+ assert(root.querySelector('strong').textContent==='03','countdown begins at 03');cure.update(t+2201);assert(root.querySelector('strong').textContent==='02','countdown advances to 02');cure.update(t+3201);assert(root.querySelector('strong').textContent==='01','countdown advances to 01');
+ cure.update(t+4201);assert(cure.state()==='pause'&&root.querySelector('#final-reveal').hidden,'light turns off before the reveal');cure.update(t+4510);cure.update(t+5620);assert(cure.state()==='finished'&&group.position.y===0&&group.scale.value===1&&!root.querySelector('#final-reveal').hidden,'hands return before the final reveal');
+ assert(JSON.stringify(nail.actions)===JSON.stringify([action]),'curing preserves every design action');root.querySelector('[data-keep]').click();assert(kept===1,'KEEP is available only after the ritual');root.querySelector('[data-new]').click();assert(reset===1&&!presented&&cure.state()==='making','START AGAIN returns to making through the reset action');
+ document.querySelector('#results').textContent=checks.join('\n')+'\nALL WORKSTATION CHECKS PASSED';root.hidden=true;
+}catch(e){document.querySelector('#results').textContent=checks.join('\n')+'\nFAIL '+e.stack;}
+</script>

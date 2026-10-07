@@ -32,7 +32,7 @@ export function createStampSystem(api){
  }
  function finish(){if(!motion)return;contact();motion=null;physical.style.setProperty('--press','0');physical.hidden=true;}
  function press(id,u=.5,v=.5,e){if(!active||api.presenting())return false;finish();commitStroke();const s=specs[id];if(!s)return false;hoverId=id;draw(effectiveMirror(id));if(e)setPose(e,id,true);motion={id,u,v,start:performance.now(),contacted:false};return true;}
- canvas.addEventListener('pointerdown',e=>{if(!active||api.presenting()||e.button>0)return;e.preventDefault();e.stopImmediatePropagation();const h=hit(e);if(!h){api.zoomOut();return;}const id=h.object.userData.id,p=localPoint(e,nails[id]);lastPointer={clientX:e.clientX,clientY:e.clientY,pointerType:e.pointerType};press(id,api.zoomed?.()?p.x/SIZE:.5,api.zoomed?.()?p.y/SIZE:span(nails[id].form)/2,e);},true);
+ canvas.addEventListener('pointerdown',e=>{if(!active||api.presenting()||e.button>0)return;e.preventDefault();e.stopImmediatePropagation();const h=hit(e);if(!h)return;const id=h.object.userData.id,p=localPoint(e,nails[id]);lastPointer={clientX:e.clientX,clientY:e.clientY,pointerType:e.pointerType};press(id,api.zoomed?.()?p.x/SIZE:.5,api.zoomed?.()?p.y/SIZE:span(nails[id].form)/2,e);},true);
  canvas.addEventListener('pointermove',e=>{if(!active||api.presenting())return;lastPointer={clientX:e.clientX,clientY:e.clientY,pointerType:e.pointerType};if(motion)return;const h=hit(e);hoverId=h?h.object.userData.id:-1;setPose(e,hoverId);draw(effectiveMirror());},true);
  canvas.addEventListener('pointerleave',()=>{if(!motion)physical.hidden=true;hoverId=-1;});
  canvas.addEventListener('dblclick',e=>{if(active)e.stopImmediatePropagation();},true);
