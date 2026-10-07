@@ -1,0 +1,24 @@
+<!doctype html><meta charset="utf-8"><title>Extension surface checks</title><pre id="results">Running…</pre>
+<script type="module">
+import {createSurface,replay,applyTransfer,trimSurface,SIZE,SURFACE_HEIGHT} from '../dist/materials.js';
+import {naturalForm,tendencies} from '../dist/nail-form.js';
+import {captureRecipe,makeTransfer} from '../dist/transfer.js';
+const results=[],assert=(c,s)=>{if(!c)throw Error(s);results.push('PASS '+s);};
+const natural=naturalForm(),long={...natural,...tendencies.coffin,shapeAssist:'coffin',extensionLength:1.5},short={...long,extensionLength:.35};
+const pixel=(n,u,v)=>[...n.ctx.getImageData(Math.round(u*SIZE),Math.round(v*SIZE),1,1).data];
+const old={tool:'brush',color:0,material:'cream',seed:1,points:[{x:256,y:460,r:95}]};
+const line={tool:'liner',color:6,material:'cream',surface:long,points:Array.from({length:100},(_,i)=>({x:256,y:520+i*6,r:8}))};
+try{
+ const n={...createSurface(),id:3,form:long,actions:[old]};replay(n,n.actions);const before=pixel(n,.5,.85);
+ assert(n.canvas.height===SURFACE_HEIGHT&&SURFACE_HEIGHT>=SIZE*2.65,'new drawable area uses additional texture rows');
+ assert(pixel(n,.5,1.06)[3]===0,'old brush footprints do not spill into a newly extended tip');
+ assert(before[3]>0,'original nail-bed artwork stays at its original texel coordinates');
+ n.actions.push(line);replay(n,n.actions);assert(pixel(n,.5,2.1)[2]>100,'liner can paint beyond the original free edge');
+ const prior=n.actions.slice();trimSurface(n,short);n.actions.push({tool:'trim',surface:short,points:[]});assert(pixel(n,.5,2.1)[3]===0,'shortening trims artwork outside the remaining surface');
+ replay(n,n.actions);assert(pixel(n,.5,2.1)[3]===0,'re-extending cannot reveal already trimmed artwork');
+ replay(n,prior);assert(pixel(n,.5,2.1)[3]>0,'undoing the trim restores artwork on the long tip');
+ const recipe=captureRecipe(3,[45,61*2.5],prior,long),target={...createSurface(),id:6,form:long,span:2.5,actions:[]};applyTransfer(target,makeTransfer(recipe,target,[45,61*2.5]));assert(pixel(target,.5,2.1)[3]>0,'the stamp transfers artwork across an extended recipient');
+ const small={...createSurface(),id:0,form:natural,span:1,actions:[]};applyTransfer(small,makeTransfer(recipe,small,[45,61]));assert(pixel(small,.5,.84)[3]>0,'a long-nail imprint adapts into a natural nail domain');
+ document.querySelector('#results').textContent=results.join('\n')+'\nALL EXTENSION CHECKS PASSED';
+}catch(e){document.querySelector('#results').textContent=results.join('\n')+'\nFAIL '+e.message;}
+</script>

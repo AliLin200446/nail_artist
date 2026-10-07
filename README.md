@@ -26,7 +26,7 @@ The build packages the site under `.vercel/output/static/`. Serve that directory
 - Designs and tools are saved to localStorage on this browser/device.
 
 ## Architecture
-Three.js is vendored in `dist/vendor/`. Original vector hand contours are drawn into a high-resolution transparent canvas. Ten independent flat nail meshes share the same positions as their blush bases and warm-brown outlines. The pigment shader adds quiet print variation and one small drawn highlight, with no photographic assets, realistic lighting, or curved gloss. Each nail retains its 512 × 512 paint and finish textures and action history. Painting, layering, erasing, undo, sound, close-up, presentation and local persistence use the existing interaction system.
+Three.js is vendored in `dist/vendor/`. Original vector hand contours are drawn into a high-resolution transparent canvas. Ten independent nail meshes share anchored blush bases and warm-brown outlines. Natural nails preserve the illustrated appearance; extensions add curved geometry and subtle gel reflections. Each nail uses a 512 × 1536 paint, finish and detail surface: original artwork stays in its original rows while extension adds drawable space. Painting, layering, erasing, undo, sound, close-up, presentation and local persistence use the existing interaction system.
 
 Nail IDs, normalized drawing coordinates and the storage key remain unchanged so existing saved sets survive the visual update. Four illustrated bottles are visible in the tray; the existing additional colors remain accessible by sliding it.
 
@@ -78,7 +78,7 @@ Run `node --test tests/charms.test.mjs` for saved-state validation and v1/v2/v3 
 
 The seventh physical tool is a silicone nail stamper. Select it and press a designed nail to load its surface imprint, then press other nails to transfer it repeatedly. The miniature design stays visible in the tool head. Matching left/right fingers mirror automatically; other transfers preserve orientation. `M`, or another tap on the active loaded stamper, flips that default. Select CLEAN and tap the loaded stamper to wipe it; tapping the now-empty stamper selects it for a new capture.
 
-Each press takes 260 ms, with contact at 43% of the motion and an 8% head compression. A transfer adds one shared-undo action at contact; capture adds none. Charms are independent objects and are never included. Centered presses use the full-nail composition; offset presses shift it by at most 24% of UV space. DONE hides the stamp with the existing tools.
+Each press takes 260 ms, with contact at 43% of the motion and an 8% head compression. A transfer adds one shared-undo action at contact; capture adds none. Charms are independent objects and are never included. Overview presses center the full-nail composition; close-up offset presses shift it by at most 24% of UV space. DONE hides the stamp with the existing tools.
 
 `dist/transfer.js` stores immutable surface recipes shared by transferred layers, including references to earlier stamps when recapturing a stamped nail. `dist/materials.js` replays recipes in normalized nail coordinates with footprint aspect correction, then composites an isolated coat. Initial brush/fan coats are treated as the base; subsequent drawing remains decorative. Existing recipient bases are preserved, while erased bases can receive a fresh one. Source erasures only cut the isolated imprint, never the recipient's artwork. A 0.35-texture-pixel blur gives wet transfers a slight edge softness. Compiled imprints are cached for rapid repetition. Version 4 saves retain the loaded tool and only the recipes still needed by the set; older saves remain readable.
 
@@ -87,3 +87,18 @@ Each press takes 260 ms, with contact at 43% of the motion and an 8% head compre
 - `node --test tests/*.test.mjs`: saved-state compatibility, mirror defaults/override, immutable capture, base policy, offsets, dependency ordering and invalid recipe rejection.
 - Serve the repository over local HTTP and open `tests/transfer-render.html`: ten real-canvas assertions cover mirrored pixels, base preservation, isolated erasure, cleaned-base detection, recaptured transfers, cache reuse, offsets and undo replay. This test page is outside the deployed `dist/` directory.
 - Browser workflow: cream base, red wave and three black dots on left index → mirrored right index → left pinky → independent pinky edit → unique pearl → undo. Also checked M override, tap-to-flip, CLEAN reset, reload persistence, seven-tool layout at 390 × 844, and DONE. No browser errors were reported. Physical touch hardware was not available for testing.
+
+## Physical extension
+
+Select EXTEND, then select a nail. Drag its tip outward or inward to continuously lengthen or shorten the free edge. The tiny side marks sculpt tip width horizontally and taper/roundness vertically, with gentle shape assistance. Double-tap the tip to cycle square → almond → coffin → stiletto without changing length. Double-tap the nail bed for an automatically fitted close-up.
+
+Shift-double-click another nail to copy the selected form, or tap the faint ghost tip on the opposite finger. Painting, liner, dots, materials, stamps and physical objects all use the added surface. Existing artwork remains anchored and a new extension starts clear. Shortening previews the removed area, trims paint and affected charms on release, and joins the shared undo history.
+
+`dist/nail-form.js` defines the anchored silhouette, continuous dimensions and curvature. `dist/extend.js` creates curved meshes, gel lighting, physical controls and trim/matching gestures. Version 5 saves retain natural bounds, length, width, taper, roundness, shape assistance and surface geometry alongside artwork, objects and undo snapshots. Previous save versions remain readable.
+
+### Extension verification
+
+- `node --test tests/*.test.mjs`: 14 passing model and compatibility checks.
+- `tests/extension-render.html`: nine passing real-canvas checks for added surface, anchored artwork, clipping, trim/regrow, undo and stamping between natural and extended nails. Existing ten transfer canvas checks also pass.
+- Browser checks: continuous length, shape cycling, fitted close-up, liner and pearl on the extension, trim removal and complete undo restoration, opposite-hand matching, mirrored transfer and refresh persistence.
+- All eight tools render at a 390 × 844 iframe size. Physical touch gestures and device performance still require hardware testing.

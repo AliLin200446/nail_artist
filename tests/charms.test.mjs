@@ -8,7 +8,7 @@ test('persisted vocabulary has 16 physical objects with valid nail-local records
   for(const {type,material} of charmTypes)assert.equal(validCharm({...pearl,type,material,...(type==='chain'?{end:{u:.7,v:.7}}:{})}),true,type);
 });
 test('rejects damaged or out-of-range saved objects before creating meshes',()=>{
-  for(const patch of [{nailId:10},{nailId:-1},{u:NaN},{v:1.1},{scale:.69},{scale:1.41},{rotation:Infinity},{zOffset:-1},{type:'unknown'},{material:'unknown'},{id:null}])assert.equal(validCharm({...pearl,...patch}),false,JSON.stringify(patch));
+  for(const patch of [{nailId:10},{nailId:-1},{u:NaN},{v:3.1},{u:1.1},{scale:.69},{scale:1.41},{rotation:Infinity},{zOffset:-1},{type:'unknown'},{material:'unknown'},{id:null}])assert.equal(validCharm({...pearl,...patch}),false,JSON.stringify(patch));
   assert.equal(validCharm({...pearl,type:'chain',material:'silver'}),false);
   assert.equal(validCharm({...pearl,type:'chain',material:'silver',end:{u:2,v:.5}}),false);
 });
@@ -22,3 +22,5 @@ test('v1 pigment migration still preserves the earlier drawing vocabulary',()=>{
   const nails=Array.from({length:10},()=>[]);nails[0]=[{tool:'brush',color:4,points:[{x:100,y:100,r:20}]}];
   const data=migrate({v:1,nails,colorIndex:4});assert.equal(data.nails[0][0].material,'chrome');assert.equal(data.nails[0][0].pigment,'#a6aaa8');assert.equal(data.nails[0][0].legacy,true);
 });
+
+test('charms retain canonical positions beyond the original free edge',()=>{assert.equal(validCharm({...pearl,v:2.4}),true);});
