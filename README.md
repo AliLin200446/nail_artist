@@ -124,3 +124,20 @@ The table now has three zones: polish/material at left, options for the active t
 - Existing 10 stamp and 9 extension canvas regressions pass.
 - Manual browser flows: #6F83C8 bottle and paint; ruby heart placement/move/scale/rotation; 100% → 300% pointer-focused zoom; jelly + liner + gem alignment; delete/undo; refresh persistence; curing and reveal. Responsive layout inspected at 390 × 844.
 - Physical multitouch hardware and native OS share sheets remain untested.
+
+## Feedback iteration: new sets, shapes and object trays
+
+**NEW SET ↻** is available beside DONE while editing. Its small editorial confirmation preserves the current design on Cancel. START NEW clears paint, transferred recipes, all physical objects and nail forms; it resets brush, cream, Tomato, custom session controls and the fitted view. The blank working state is saved immediately. The prior manicure remains one undoable action, as with START AGAIN.
+
+**SHAPE / LENGTH** adds natural, almond, oval, square, coffin and stiletto presets, plus the existing CUSTOM tip and side handles. S/M/L/XL animate only the nail geometry from its fixed bed. THIS NAIL and APPLY TO ALL allow mismatched sets. A preset change is one undoable action; trimming retains the existing non-destructive history behavior.
+
+**PICK → OBJECTS** reveals CRYSTALS, STICKERS or METAL. Crystals add marquise, baguette and an oversized statement shape, AB iridescence and custom colors. Stickers include ten vector motifs, a single editorial letter, black/white/current/custom ink, and a shader mask that clips the entire transformed sticker to its nail. Steel beads have XS/S/M/L sizes and silver/gunmetal/gold finishes. Existing chains and physical objects remain under METAL. Select an object to place repeats, then tap PICK again to move existing objects and reveal resize/rotate/delete controls. Touch transform gestures are preserved. Selection handles stay out of the way while placing repeated objects.
+
+Hovering each illustrated tool now plays a 1.5-second gesture study. On touch, the first tap selects the tool immediately and shows its preview for 1.8 seconds. Reduced-motion users get a static illustration. Version 7 saves preserve all new shape and object properties, alongside older saved artwork.
+
+### Feedback verification
+
+- 22 passing Node tests cover prior functionality plus anchored/distinct presets, length/custom behavior, new object validation and v7 round trips.
+- 40 browser rendering checks pass: 10 transfer, 9 extension, 13 workstation and 8 new WebGL/touch-preview checks in `tests/feedback-render.html`.
+- Browser flows verified: all long stilettos → ring-only XL coffin; AB statement placement/move/scale/rotation; three independent XS silver beads; edge-clipped spiderweb; all six hover lessons; refresh and NEW SET confirmation/reset.
+- Responsive trays inspected at 390 × 844. Physical multitouch hardware and native OS sharing remain untested.
