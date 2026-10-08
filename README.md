@@ -141,3 +141,19 @@ Hovering each illustrated tool now plays a 1.5-second gesture study. On touch, t
 - 40 browser rendering checks pass: 10 transfer, 9 extension, 13 workstation and 8 new WebGL/touch-preview checks in `tests/feedback-render.html`.
 - Browser flows verified: all long stilettos → ring-only XL coffin; AB statement placement/move/scale/rotation; three independent XS silver beads; edge-clipped spiderweb; all six hover lessons; refresh and NEW SET confirmation/reset.
 - Responsive trays inspected at 390 × 844. Physical multitouch hardware and native OS sharing remain untested.
+
+## Editor hierarchy: see what is available
+
+The editor now distinguishes **NAIL**, **COLOR**, **FINISH**, **TOOLS** and **OBJECTS**. NAIL is a permanent entry with four silhouette samples; opening it shows seven illustrated shapes plus length and target controls. OBJECTS is a permanent illustrated tray with direct CRYSTALS, STICKERS and METAL entries. Its detailed sheets show crystal facets, all sticker artwork, and four bead sizes in each metal finish. COLOR opens the full bottle library and FINISH opens the eight existing materials.
+
+Only one detailed area is open at a time. Desktop keeps compact bottles/materials at left, object samples and five large tools at right, and the current detail area between them. The fitted camera reserves space for these objects without changing the hand illustration. Mobile retains the category shortcuts while swapping the tool row for the selected library. Selecting a decoration closes the mobile detail tray to make room for placement.
+
+The physical creation row contains only brush, liner, dot, fan and clean. Choosing a decoration automatically carries it to the canvas; one placement ends carrying, and clicking or dragging an existing object selects it directly, including from painting mode. The existing resize, rotate, delete and touch transforms remain. Pick is now an internal behavior. Stamp remains a separate **transfer design** action because it copies an existing painted nail; it is outside the primary row and does not compete with stickers.
+
+Category hover studies demonstrate SHAPE + EXTEND, PLACE + MOVE, PLACE + SCALE and PLACE + ARRANGE. Existing short touch previews, autosave, new-set reset and curing remain in place.
+
+### Hierarchy verification
+
+- 76 automated checks pass: 22 Node model checks and 54 browser checks, including the 14 live-editor assertions in `tests/hierarchy-render.html`.
+- Desktop flows: visible entry points, illustrated presets/all-nail application, automatic object placement, direct dragging from brush mode, resize/rotation, category previews and single-area disclosure.
+- Mobile flows at 390 × 720: category visibility, sticker placement with automatic tray dismissal, per-nail shape/length changes, full polish library and finish selection. Physical multitouch hardware remains untested.
