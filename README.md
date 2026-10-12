@@ -142,18 +142,18 @@ Hovering each illustrated tool now plays a 1.5-second gesture study. On touch, t
 - Browser flows verified: all long stilettos → ring-only XL coffin; AB statement placement/move/scale/rotation; three independent XS silver beads; edge-clipped spiderweb; all six hover lessons; refresh and NEW SET confirmation/reset.
 - Responsive trays inspected at 390 × 844. Physical multitouch hardware and native OS sharing remain untested.
 
-## Editor hierarchy: see what is available
+## Nail toolbox
 
-The editor now distinguishes **NAIL**, **COLOR**, **FINISH**, **TOOLS** and **OBJECTS**. NAIL is a permanent entry with four silhouette samples; opening it shows seven illustrated shapes plus length and target controls. OBJECTS is a permanent illustrated tray with direct CRYSTALS, STICKERS and METAL entries. Its detailed sheets show crystal facets, all sticker artwork, and four bead sizes in each metal finish. COLOR opens the full bottle library and FINISH opens the eight existing materials.
+The current editor uses one illustrated cream manicure case. Open it to see four compartments: **POLISH**, **NAILS**, **CHARMS**, and **TOOLS**. Polish combines curated and recent custom bottles with all eight materials. Nails retains seven silhouettes, lengths and per-nail/all-nail targets. Charms contains crystals, stickers and metal, including the original physical objects. Tools contains five illustrated implements, settings, gesture previews and the existing transfer-design action.
 
-Only one detailed area is open at a time. Desktop keeps compact bottles/materials at left, object samples and five large tools at right, and the current detail area between them. The fitted camera reserves space for these objects without changing the hand illustration. Mobile retains the category shortcuts while swapping the tool row for the selected library. Selecting a decoration closes the mobile detail tray to make room for placement.
+Taking a polish closes the case. The active pigment and application tool remain visible at the canvas edge. Closing the case preserves selected tools and charm placement; crystals, stickers and beads repeat until placement is exited. Back returns to the four compartments, Close Case or Escape closes the drawer, and opening the case preserves all artwork.
 
-The physical creation row contains only brush, liner, dot, fan and clean. Choosing a decoration automatically carries it to the canvas; one placement ends carrying, and clicking or dragging an existing object selects it directly, including from painting mode. The existing resize, rotate, delete and touch transforms remain. Pick is now an internal behavior. Stamp remains a separate **transfer design** action because it copies an existing painted nail; it is outside the primary row and does not compete with stickers.
+The bottom toolbox owns a reserved layout rectangle. The clipped WebGL viewport resizes over 420 ms, with layout fitting independent of user zoom/pan. Sculpt handles share the canvas coordinate space and clipping. Mobile contents scroll inside the drawer with persistent compartment and back/close controls.
 
-Category hover studies demonstrate SHAPE + EXTEND, PLACE + MOVE, PLACE + SCALE and PLACE + ARRANGE. Existing short touch previews, autosave, new-set reset and curing remain in place.
+### Verification
 
-### Hierarchy verification
-
-- 76 automated checks pass: 22 Node model checks and 54 browser checks, including the 14 live-editor assertions in `tests/hierarchy-render.html`.
-- Desktop flows: visible entry points, illustrated presets/all-nail application, automatic object placement, direct dragging from brush mode, resize/rotation, category previews and single-area disclosure.
-- Mobile flows at 390 × 720: category visibility, sticker placement with automatic tray dismissal, per-nail shape/length changes, full polish library and finish selection. Physical multitouch hardware remains untested.
+- 22 Node model tests pass.
+- 40 browser rendering regressions pass: transfer 10, extension 9, workstation/curing 13, feedback/previews 8.
+- 29 toolbox workflow checks in tests/toolbox-render.html cover four compartments, materials, custom colors, preserved selections, original charms, and disjoint canvas/toolbox rectangles at 65%, 100%, 189%, 300% and 400%, including unchanged zoom/pan after open/close and mobile scrolling.
+- Manual browser checks: closed-case brush stroke, repeated crystal placement, refresh persistence, confirmed New Set reset, and Done → UV curing → reveal. Responsive visuals checked at 390 × 720 and 1280 × 720.
+- Physical multitouch hardware and native OS share sheets remain untested.
